@@ -100,12 +100,7 @@ class Turbine {
 
     Draw() {
 
-        // ----------------------------------------
         // POLE
-        // - small gap between pole and pivot
-        // - extends to bottom of screen
-        //
-
         stroke(255);
         strokeWeight(6);
 
@@ -117,10 +112,7 @@ class Turbine {
         );
 
 
-        // ----------------------------------------
         // BLADES
-        //
-
         push();
 
         translate(this.x, this.y);
@@ -143,11 +135,7 @@ class Turbine {
 
         pop();
 
-
-        // ----------------------------------------
         // PIVOT
-        //
-
         noStroke();
         fill(255);
         circle(this.x, this.y, TURBINE_PIVOT_SIZE);

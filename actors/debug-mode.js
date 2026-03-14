@@ -1,3 +1,10 @@
+// ============================================
+// DEBUG MODE CLASS
+// ============================================
+//
+// - simple text pop-ups with info
+//
+
 class DebugMode {
 
     constructor() {

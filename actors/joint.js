@@ -1,3 +1,11 @@
+// ============================================
+// JOINT CLASS
+// ============================================
+//
+// - star1 --> joint --> star2
+// - strumming STATE (oscillates back and forth while stablizing)
+//
+
 class Joint {
 
     constructor(star1, star2) {
@@ -16,11 +24,11 @@ class Joint {
         this.isStrumming = false;
 
         this.phase = 0;
-        this.frequency = 1;   // speed of oscillation
+        this.frequency = 1;     // speed of oscillation
         this.amplitude = 0;     // max displacement
-        this.damping = 0.9;    // how quickly vibration dies out
+        this.damping = 0.9;     // how quickly vibration dies out
 
-        this.strumDirection = 0;
+        this.strumDirection = 0;    // start direction
     }
 
     Update() {
@@ -97,13 +105,13 @@ class Joint {
                 this.star2.x - this.star1.x
             ) + HALF_PI;
 
-        // Apply directionality based on the trigger movement vector (mouse or comet)
+        // apply directionality based on the trigger movement vector (mouse or comet)
         if (vx !== undefined && vy !== undefined) {
             let dot = vx * cos(this.strumDirection) + vy * sin(this.strumDirection);
             if (dot < 0) this.amplitude *= -1;
         }
 
-        // Start at peak displacement (HALF_PI) for an immediate snap in the direction of the swipe
+        // start at peak displacement (quarter unit circle (thanks rene))
         this.phase = HALF_PI;
 
         // shorter strings vibrate faster
@@ -116,7 +124,7 @@ class Joint {
         let ABy = this.star2.y - this.star1.y;
 
         // vector from star1 to mouse
-        // Use provided coordinates, or fallback to midpoint for non-mouse triggers
+        // use provided coordinates, or fallback to midpoint for non-mouse triggers
         let targetX = (x !== undefined) ? x : (vx !== undefined ? this.originalX : mouseX);
         let targetY = (y !== undefined) ? y : (vy !== undefined ? this.originalY : mouseY);
 

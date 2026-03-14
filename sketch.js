@@ -1,11 +1,27 @@
 // ============================================
+// WHAT'S NEXT?
+// ============================================
+//
+// - first and foremost: PLAYTEST, fern!
+// - also, clean up code. get rid of unnecessary files. modularize systems.
+// - the juice
+// - generative and mesmerizing art with the alignment of the stars
+// - sparkly audio layers
+// - juicy and animated feedback
+// - post-processing
+// - comet sounds
+// - BIG ONE: more expressive randomization and math with personality
+// 
+
+// ============================================
 // KNOBS
 // ============================================
 //
 // - tweak interaction + physics
+// - note to fern: bring the other knobs in here--have em in one spot
 //
 
-const DEBUG_MODE_ACTIVE = true;
+let DEBUG_MODE_ACTIVE = false;
 
 const NUMSTARS = 120;
 const SPARKLE_SPEED = 2;
@@ -15,10 +31,10 @@ const NUMCOMETS = 50;
 const COMET_WAIT_MIN = 1000;
 const COMET_MAX_WAIT = 10000;
 
-const METEOR_SHOWER_CHANCE = 0.03;       // 3% chance to trigger shower on every comet spawn
-const METEOR_SHOWER_INTENSITY_MIN = 50;  // Milliseconds between comets during shower
+const METEOR_SHOWER_CHANCE = 0.03;       // 3 per cent chance to trigger shower on every comet spawn
+const METEOR_SHOWER_INTENSITY_MIN = 50;  // milliseconds between comets during shower
 const METEOR_SHOWER_INTENSITY_MAX = 200;
-const METEOR_SHOWER_DURATION = 6000;     // How long the shower lasts (ms)
+const METEOR_SHOWER_DURATION = 6000;     // how long the shower lasts (ms)
 
 // ============================================
 // STORAGE
@@ -129,7 +145,7 @@ function draw() {
             inactive.Activate();
         }
 
-        // Roll for a meteor shower trigger if one isn't already active
+        // roll for a meteor shower trigger if one isn't already active
         if (!isMeteorShower && random() < METEOR_SHOWER_CHANCE) {
             isMeteorShower = true;
             meteorShowerEndTime = millis() + METEOR_SHOWER_DURATION;
@@ -160,9 +176,7 @@ function draw() {
 
 }
 
-// ============================================
-// MOUSE EVENTS
-// ============================================
+// mousey-mousey
 
 function mousePressed() {
     constellationsSystem.handleMousePressed();
@@ -170,4 +184,10 @@ function mousePressed() {
 
 function mouseReleased() {
     constellationsSystem.handleMouseReleased();
+}
+
+function keyPressed() {
+    if (key === 'd' || key === 'D') {
+        DEBUG_MODE_ACTIVE = !DEBUG_MODE_ACTIVE;
+    }
 }

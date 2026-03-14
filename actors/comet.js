@@ -1,3 +1,12 @@
+// ============================================
+// COMET CLASS
+// ============================================
+//
+// - red dot and solid line
+// - short distance down-right
+// - strums strings once if in trajectory
+//
+
 class Comet {
 
     constructor() {
@@ -15,10 +24,10 @@ class Comet {
         this.startX = random(width);
         this.startY = random(height);
         this.distProgress = 0;
-        this.maxTravel = random(100, 300); // short distance
+        this.maxTravel = random(100, 300); // VERY short distance
         this.active = true;
 
-        // Check for intersections with existing constellation joints
+        // check for intersections with existing constellation joints
         const cos45 = 0.7071;
         const endX = this.startX + this.maxTravel * cos45;
         const endY = this.startY + this.maxTravel * cos45;
@@ -28,20 +37,24 @@ class Comet {
             const s2 = stars[conn[1]];
             const joint = conn[2];
 
-            if (this.intersects(
+            if (this.Intersects(
                 this.startX, this.startY, endX, endY, 
                 s1.x, s1.y, s2.x, s2.y
             )) {
-                // Pass the comet's movement vector for directional strumming
+                // pass trajectory for directional strumming
                 joint.Strum(undefined, undefined, endX - this.startX, endY - this.startY);
             }
         }
     }
 
-    // Helper for line segment intersection
-    intersects(x1, y1, x2, y2, x3, y3, x4, y4) {
+    // ============================================
+    // compare two trajectories and check if they cross
+    // ============================================
+    //
+    //
+    Intersects(x1, y1, x2, y2, x3, y3, x4, y4) {
         const den = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-        if (den === 0) return false; // Parallel
+        if (den === 0) return false; // parallel
 
         const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / den;
         const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / den;
@@ -54,7 +67,7 @@ class Comet {
 
         this.distProgress += this.speed;
 
-        // Turn off when the tail has also finished its travel
+        // turn off when the tail has also finished its travel
         if (this.distProgress - this.tailMaxLen > this.maxTravel) {
             this.active = false;
         }
@@ -70,7 +83,7 @@ class Comet {
         // clamp tail start to the head's final position to shorten the tail
         tailDist = min(tailDist, headDist);
 
-        // 45 degrees down-right (PI/4)
+        // 45 degrees down-right
         const cos45 = 0.7071;
 
         let hX = this.startX + headDist * cos45;
@@ -78,12 +91,12 @@ class Comet {
         let tX = this.startX + tailDist * cos45;
         let tY = this.startY + tailDist * cos45;
 
-        // Solid red line trail
+        // solid red line trail
         stroke(255, 0, 0);
         strokeWeight(2);
         line(tX, tY, hX, hY);
 
-        // Comet Head (small red dot)
+        // comet Head (small red dot)
         noStroke();
         fill(255, 0, 0);
         circle(hX, hY, 4);
