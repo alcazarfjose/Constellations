@@ -7,6 +7,35 @@ class ConstellationsSystem {
         this.hoveredStarIndex = null;
         this.selectedStarIndex = null;
 
+        // - generate premade connections
+        const PREMADE_MIN = 3;
+        const PREMADE_MAX = 6;
+        const PREMADE_MAX_DISTANCE = 300; // max pixel distance for a premade connection
+        let premadeCount = floor(random(PREMADE_MIN, PREMADE_MAX + 1));
+        let attempts = 0;
+
+        while (this.connections.length < premadeCount && attempts < 500) {
+            attempts++;
+            let idx1 = floor(random(stars.length));
+            let idx2 = floor(random(stars.length));
+
+            if (idx1 === idx2) continue;
+
+            // check distance between stars
+            const s1 = stars[idx1];
+            const s2 = stars[idx2];
+            if (dist(s1.x, s1.y, s2.x, s2.y) > PREMADE_MAX_DISTANCE) continue;
+
+            // check for existing connection to avoid duplicates
+            let exists = this.connections.some(c => 
+                (c[0] === idx1 && c[1] === idx2) || (c[0] === idx2 && c[1] === idx1)
+            );
+
+            if (!exists) {
+                let newJoint = new Joint(stars[idx1], stars[idx2]);
+                this.connections.push([idx1, idx2, newJoint]);
+            }
+        }
     }
 
     // ============================================
@@ -81,7 +110,7 @@ class ConstellationsSystem {
 
     Draw() {
 
-        // - draw hover glow
+        // draw hover glow
         if (this.hoveredStarIndex !== null) {
             const star = stars[this.hoveredStarIndex];
             noStroke();
@@ -89,26 +118,38 @@ class ConstellationsSystem {
             circle(star.x, star.y, STAR_HOVER_RADIUS * 2);
         }
 
-        // - draw drag line
+        // draw drag line
         if (this.selectedStarIndex !== null) {
             const star = stars[this.selectedStarIndex];
-            let imminentDelete = false;
-            if (this.hoveredStarIndex !== null) {
+            
+            // default white (dragging in voidddddd..... o_o)
+            let r = 255, g = 255, b = 255;
+
+            if (this.hoveredStarIndex !== null && this.hoveredStarIndex !== this.selectedStarIndex) {
                 const start = this.selectedStarIndex;
                 const end = this.hoveredStarIndex;
+                let exists = false;
                  for (let i = 0; i < this.connections.length; i++) {
                     const conn = this.connections[i];
                     if ((conn[0] === start && conn[1] === end) || (conn[0] === end && conn[1] === start)) {
-                        imminentDelete = true;
+                        exists = true;
                         break;
                     }
                 }
+
+                if (exists) {
+                    r = 255; g = 0; b = 0; // red del
+                } else {
+                    r = 0; g = 255; b = 0; // green create
+                }
             }
 
-            stroke(imminentDelete ? 255: 0, 0, imminentDelete ? 0: 255);
+            stroke(r, g, b);
 
             strokeWeight(2);
+            drawingContext.setLineDash([10, 10]);
             line(star.x, star.y, mouseX, mouseY);
+            drawingContext.setLineDash([]);
         }
     }
 

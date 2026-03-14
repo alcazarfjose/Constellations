@@ -125,7 +125,7 @@ function setup() {
 
 function draw() {
 
-    background(0);
+    background(0, 0, 0);
 
     for (let star of stars) {
 
