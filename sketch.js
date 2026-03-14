@@ -88,7 +88,8 @@ function draw() {
 
     constellationsSystem.Update();
     constellationsSystem.Draw();
-
+    constellationsSystem.JointsUpdate();
+    constellationsSystem.StrumCheck();
     sparkleSystem.Update();
 
     debugUI.Draw();

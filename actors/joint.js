@@ -4,21 +4,125 @@ class Joint {
         this.star1 = star1;
         this.star2 = star2;
 
-        this.x = (star1.x + star2.x) / 2;
-        this.y = (star1.y + star2.y) / 2;
+        this.originalX = (star1.x + star2.x) / 2;
+        this.originalY = (star1.y + star2.y) / 2;
+
+        this.strumX = 0;
+        this.strumY = 0;
+
+        this.x = this.originalX;
+        this.y = this.originalY;
+
+        this.isStrumming = false;
+
+        this.phase = 0;
+        this.frequency = 1;   // speed of oscillation
+        this.amplitude = 0;     // max displacement
+        this.damping = 0.96;    // how quickly vibration dies out
+
+        this.strumDirection = 0;
     }
 
     Update() {
-    
+
+        // midpoint between stars
+        this.originalX = (this.star1.x + this.star2.x) / 2;
+        this.originalY = (this.star1.y + this.star2.y) / 2;
+
+        if (this.isStrumming) {
+
+            // advance oscillation
+            this.phase += this.frequency;
+
+            // decay amplitude
+            this.amplitude *= this.damping;
+
+            // compute oscillating offset
+            let offset = sin(this.phase) * this.amplitude;
+
+            // apply displacement perpendicular to string
+            this.x = this.strumX + cos(this.strumDirection) * offset;
+            this.y = this.strumY + sin(this.strumDirection) * offset;
+
+            // recenter
+            let t = constrain(this.amplitude / 50, 0, 1);
+            let recenter = 0.02 + 0.08 * (1 - t);
+
+            this.strumX = lerp(this.strumX, this.originalX, recenter);
+            this.strumY = lerp(this.strumY, this.originalY, recenter);
+
+            // stop when vibration is tiny
+            if (abs(this.amplitude) < 0.1) {
+                this.isStrumming = false;
+                this.x = this.originalX;
+                this.y = this.originalY;
+            }
+
+        } else {
+
+            // stay centered if not vibrating
+            this.x = this.originalX;
+            this.y = this.originalY;
+
+        }
+
     }
 
     Draw() {
 
         stroke(255);
         strokeWeight(1);
+
         line(this.star1.x, this.star1.y, this.x, this.y);
         line(this.star2.x, this.star2.y, this.x, this.y);
-        
+
+    }
+
+    Strum() {
+
+        console.log("STRUMMED");
+
+        let stringLength = dist(
+            this.star1.x, this.star1.y,
+            this.star2.x, this.star2.y
+        );
+
+        // amplitude proportional to string length
+        this.amplitude = stringLength / 5;
+
+        // perpendicular direction to the string
+        this.strumDirection =
+            atan2(
+                this.star2.y - this.star1.y,
+                this.star2.x - this.star1.x
+            ) + HALF_PI;
+
+        // reset oscillation
+        this.phase = 0;
+
+        // shorter strings vibrate faster
+        this.frequency = 0.25 + 100 / (stringLength + 100);
+
+        this.isStrumming = true;
+
+        // direction of the string
+        let ABx = this.star2.x - this.star1.x;
+        let ABy = this.star2.y - this.star1.y;
+
+        // vector from star1 to mouse
+        let AMx = mouseX - this.star1.x;
+        let AMy = mouseY - this.star1.y;
+
+        // projection amount along the string
+        let t = (AMx * ABx + AMy * ABy) / (ABx * ABx + ABy * ABy);
+
+        // optional: clamp so the point stays between the stars
+        t = constrain(t, 0, 1);
+
+        // intersection point (foot of perpendicular)
+        this.strumX = this.star1.x + ABx * t;
+        this.strumY = this.star1.y + ABy * t;
+
     }
 
 }

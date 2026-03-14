@@ -26,10 +26,38 @@ class ConstellationsSystem {
                 break;
             }
         }
+    }
 
-        for (let i = 0; i < this.connections.length; i++) { 
-            this.connections[i][2].Update();
-            this.connections[i][2].Draw();
+    isNearLine(x1, y1, x2, y2, mx, my) {
+        let d = dist(x1, y1, x2, y2);
+        let offset = dist(x1, y1, mx, my) + dist(x2, y2, mx, my);
+        return offset >= d - 1 && offset <= d + 1; // Adjust tolerance as needed
+    }
+
+    StrumCheck() {
+
+        for (let i = 0; i < this.connections.length; i++) {
+            let jointData = this.connections[i];
+
+            let start = jointData[0];
+            let end = jointData[1];
+            let joint = jointData[2];
+
+            if (this.isNearLine(stars[start].x, stars[start].y, stars[end].x, stars[end].y, mouseX, mouseY)) {
+                joint.Strum();
+                break;
+            }
+        }
+    }
+
+    JointsUpdate() {
+        for (let i = 0; i < this.connections.length; i++) {
+
+            let jointData = this.connections[i];
+            let joint = jointData[2];
+
+            joint.Update();
+            joint.Draw();
         }
     }
 
@@ -86,6 +114,7 @@ class ConstellationsSystem {
         if (this.hoveredStarIndex !== null) {
             this.selectedStarIndex = this.hoveredStarIndex;
         }
+
     }
 
     // ============================================
@@ -96,7 +125,7 @@ class ConstellationsSystem {
     //
 
     handleMouseReleased() {
-       
+
         if (this.selectedStarIndex !== null && this.hoveredStarIndex !== null && this.selectedStarIndex !== this.hoveredStarIndex) {
 
             const start = this.selectedStarIndex;
@@ -118,7 +147,7 @@ class ConstellationsSystem {
             } else {
                 // - add new connection
                 let newJoint = new Joint(stars[start], stars[end]);
-                this.connections.push([start, end, newJoint]);
+                this.connections.push([start, end, newJoint, ]);
             }
         }
 
