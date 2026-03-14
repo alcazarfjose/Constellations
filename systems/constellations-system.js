@@ -26,6 +26,11 @@ class ConstellationsSystem {
                 break;
             }
         }
+
+        for (let i = 0; i < this.connections.length; i++) { 
+            this.connections[i][2].Update();
+            this.connections[i][2].Draw();
+        }
     }
 
     // ============================================
@@ -38,20 +43,6 @@ class ConstellationsSystem {
     //
 
     Draw() {
-
-        // - draw connections
-        stroke(255);
-        strokeWeight(1);
-
-        for (let i = 0; i < this.connections.length; i++) {
-            const conn = this.connections[i];
-            const star1 = stars[conn[0]];
-            const star2 = stars[conn[1]];
-
-            //get offset
-            let offset = 0;
-            line(star1.x, star1.y, star2.x, star2.y);
-        }
 
         // - draw hover glow
         if (this.hoveredStarIndex !== null) {
@@ -126,7 +117,8 @@ class ConstellationsSystem {
                 this.connections.splice(foundIndex, 1);
             } else {
                 // - add new connection
-                this.connections.push([start, end]);
+                let newJoint = new Joint(stars[start], stars[end]);
+                this.connections.push([start, end, newJoint]);
             }
         }
 
