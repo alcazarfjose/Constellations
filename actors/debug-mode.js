@@ -15,6 +15,11 @@ class DebugMode {
         text(`${sparkleSystem.index_curr} / ${sparkleSystem.index_max}`, 15, 25);
         text(`OMEGE: ${DEBUG_OMEGA}`, 15, 65);
 
+        if (isMeteorShower) {
+            fill(255, 0, 0);
+            text("!!! METEOR SHOWER !!!", 15, 105);
+        }
+
     }
 
 }

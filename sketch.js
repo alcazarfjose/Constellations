@@ -12,6 +12,13 @@ const SPARKLE_SPEED = 2;
 const SPARKLE_OMEGA_MIN = 0.15;
 
 const NUMCOMETS = 50;
+const COMET_WAIT_MIN = 1000;
+const COMET_MAX_WAIT = 10000;
+
+const METEOR_SHOWER_CHANCE = 0.03;       // 3% chance to trigger shower on every comet spawn
+const METEOR_SHOWER_INTENSITY_MIN = 50;  // Milliseconds between comets during shower
+const METEOR_SHOWER_INTENSITY_MAX = 200;
+const METEOR_SHOWER_DURATION = 6000;     // How long the shower lasts (ms)
 
 // ============================================
 // STORAGE
@@ -21,7 +28,10 @@ const NUMCOMETS = 50;
 //
 
 let stars = [];
-let comets = []
+let comets = [];
+let nextCometTime = 0;
+let isMeteorShower = false;
+let meteorShowerEndTime = 0;
 let turbine;
 
 // ============================================
@@ -61,6 +71,12 @@ function setup() {
 
     }
 
+    for (let i = 0; i < NUMCOMETS; i++) {
+        comets.push(new Comet());
+    }
+
+    nextCometTime = millis() + random(COMET_WAIT_MIN, COMET_MAX_WAIT);
+
     turbine = new Turbine(
         width - 200,
         height - 200
@@ -99,6 +115,36 @@ function draw() {
 
         star.Draw();
 
+    }
+
+    // check if meteor shower has concluded
+    if (isMeteorShower && millis() > meteorShowerEndTime) {
+        isMeteorShower = false;
+    }
+
+    // comet spawning logic
+    if (millis() > nextCometTime) {
+        let inactive = comets.find(c => !c.active);
+        if (inactive) {
+            inactive.Activate();
+        }
+
+        // Roll for a meteor shower trigger if one isn't already active
+        if (!isMeteorShower && random() < METEOR_SHOWER_CHANCE) {
+            isMeteorShower = true;
+            meteorShowerEndTime = millis() + METEOR_SHOWER_DURATION;
+        }
+
+        // calculate next wait time based on whether we are in a shower
+        let waitMin = isMeteorShower ? METEOR_SHOWER_INTENSITY_MIN : COMET_WAIT_MIN;
+        let waitMax = isMeteorShower ? METEOR_SHOWER_INTENSITY_MAX : COMET_MAX_WAIT;
+
+        nextCometTime = millis() + random(waitMin, waitMax);
+    }
+
+    for (let comet of comets) {
+        comet.Update();
+        comet.Draw();
     }
 
     turbine.Update();
