@@ -78,7 +78,7 @@ class Joint {
 
     }
 
-    Strum() {
+    Strum(x, y, vx, vy) {
 
         console.log("STRUMMED");
 
@@ -97,8 +97,14 @@ class Joint {
                 this.star2.x - this.star1.x
             ) + HALF_PI;
 
-        // reset oscillation
-        this.phase = 0;
+        // Apply directionality based on the trigger movement vector (mouse or comet)
+        if (vx !== undefined && vy !== undefined) {
+            let dot = vx * cos(this.strumDirection) + vy * sin(this.strumDirection);
+            if (dot < 0) this.amplitude *= -1;
+        }
+
+        // Start at peak displacement (HALF_PI) for an immediate snap in the direction of the swipe
+        this.phase = HALF_PI;
 
         // shorter strings vibrate faster
         this.frequency = 0.25 + 100 / (stringLength + 100);
@@ -110,8 +116,12 @@ class Joint {
         let ABy = this.star2.y - this.star1.y;
 
         // vector from star1 to mouse
-        let AMx = mouseX - this.star1.x;
-        let AMy = mouseY - this.star1.y;
+        // Use provided coordinates, or fallback to midpoint for non-mouse triggers
+        let targetX = (x !== undefined) ? x : (vx !== undefined ? this.originalX : mouseX);
+        let targetY = (y !== undefined) ? y : (vy !== undefined ? this.originalY : mouseY);
+
+        let AMx = targetX - this.star1.x;
+        let AMy = targetY - this.star1.y;
 
         // projection amount along the string
         let t = (AMx * ABx + AMy * ABy) / (ABx * ABx + ABy * ABy);

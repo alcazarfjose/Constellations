@@ -32,7 +32,8 @@ class Comet {
                 this.startX, this.startY, endX, endY, 
                 s1.x, s1.y, s2.x, s2.y
             )) {
-                joint.Strum();
+                // Pass the comet's movement vector for directional strumming
+                joint.Strum(undefined, undefined, endX - this.startX, endY - this.startY);
             }
         }
     }

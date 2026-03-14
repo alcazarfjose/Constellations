@@ -28,24 +28,33 @@ class ConstellationsSystem {
         }
     }
 
-    isNearLine(x1, y1, x2, y2, mx, my) {
-        let d = dist(x1, y1, x2, y2);
-        let offset = dist(x1, y1, mx, my) + dist(x2, y2, mx, my);
-        return offset >= d - 1 && offset <= d + 1; // Adjust tolerance as needed
+    // Helper for line segment intersection
+    intersects(x1, y1, x2, y2, x3, y3, x4, y4) {
+        const den = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+        if (den === 0) return false; // Parallel
+
+        const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / den;
+        const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / den;
+
+        return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
     }
 
     StrumCheck() {
+        // Only check if the mouse has actually moved
+        if (mouseX === pmouseX && mouseY === pmouseY) return;
 
         for (let i = 0; i < this.connections.length; i++) {
             let jointData = this.connections[i];
 
-            let start = jointData[0];
-            let end = jointData[1];
+            let s1 = stars[jointData[0]];
+            let s2 = stars[jointData[1]];
             let joint = jointData[2];
 
-            if (this.isNearLine(stars[start].x, stars[start].y, stars[end].x, stars[end].y, mouseX, mouseY)) {
-                joint.Strum();
-                break;
+            // Check if mouse trajectory (prev pos to current pos) intersects the star connection
+            if (this.intersects(pmouseX, pmouseY, mouseX, mouseY, s1.x, s1.y, s2.x, s2.y)) {
+                // Pass mouse position and movement delta for directional strumming
+                joint.Strum(mouseX, mouseY, mouseX - pmouseX, mouseY - pmouseY);
+                // Removed 'break' to allow strumming multiple strings in a single fast swipe
             }
         }
     }
