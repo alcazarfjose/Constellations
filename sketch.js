@@ -11,6 +11,8 @@ const NUMSTARS = 120;
 const SPARKLE_SPEED = 2;
 const SPARKLE_OMEGA_MIN = 0.15;
 
+const NUMCOMETS = 50;
+
 // ============================================
 // STORAGE
 // ============================================
@@ -19,6 +21,7 @@ const SPARKLE_OMEGA_MIN = 0.15;
 //
 
 let stars = [];
+let comets = []
 let turbine;
 
 // ============================================
@@ -37,7 +40,15 @@ let constellationsSystem;
 //
 // - create stars
 // - create turbine
+// - preload sounds
 //
+
+let guitarNote;
+let filter;
+
+function preload() {
+  guitarNote = loadSound("./assets/audio/c-note-guitar.mp3");
+}
 
 function setup() {
 
@@ -61,6 +72,13 @@ function setup() {
     
     sparkleSystem = new SparkleSystem(stars.length-1);
     constellationsSystem = new ConstellationsSystem();
+
+    // audio
+
+    filter = new p5.LowPass();
+    filter.freq(6000);
+    guitarNote.disconnect();
+    guitarNote.connect(filter);
 
 }
 

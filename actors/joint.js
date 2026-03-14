@@ -18,7 +18,7 @@ class Joint {
         this.phase = 0;
         this.frequency = 1;   // speed of oscillation
         this.amplitude = 0;     // max displacement
-        this.damping = 0.96;    // how quickly vibration dies out
+        this.damping = 0.9;    // how quickly vibration dies out
 
         this.strumDirection = 0;
     }
@@ -122,6 +122,16 @@ class Joint {
         // intersection point (foot of perpendicular)
         this.strumX = this.star1.x + ABx * t;
         this.strumY = this.star1.y + ABy * t;
+
+        // map string length to pitch
+        let rate = map(stringLength, 0, 600, 3, 0.05);
+        rate = constrain(rate, 0.5, 2);
+
+        // apply pitch
+        guitarNote.rate(rate);
+
+        // play sound
+        guitarNote.play();
 
     }
 
