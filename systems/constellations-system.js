@@ -17,7 +17,7 @@ class ConstellationsSystem {
         while (this.connections.length < premadeCount && attempts < 500) {
             attempts++;
             let idx1 = floor(random(stars.length));
-            let idx2 = floor(random(stars.length));
+            let idx2 = (idx1 + 1) % stars.length;
 
             if (idx1 === idx2) continue;
 

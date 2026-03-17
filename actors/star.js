@@ -7,13 +7,16 @@ const STAR_HOVER_RADIUS = 10;
 const STAR_RADIUS_MIN = 2;
 const STAR_RADIUS_MAX = 6;
 const STAR_ANIMS_SPEED = 3;
+const STAR_REPOS_RADIUS = 300;
 
 class Star {
 
     constructor() {
 
-        this.x = 0;
-        this.y = 0;
+        this.x = -500;
+        this.y = -500;
+
+        this.tickOn = false;
 
         this.radius = random(STAR_RADIUS_MIN, STAR_RADIUS_MAX);
         this.currRadius = 0;
@@ -33,17 +36,28 @@ class Star {
 
         this.glowColor = random(palette);
 
-        this.SetRandomPosition();
+        //this.SetRandomPosition();
     }
 
     // ============================================
 
     SetRandomPosition() {
 
-        this.x = random(width);
-        this.y = random(height);
+        if (!this.tickOn) {
+            this.x = random(width);
+            this.y = random(height);
+            this.tickOn = true;
+            this.currRadius = 0;
+            return
+        }
 
-        this.currRadius = 0;
+        let dispX = random(-STAR_REPOS_RADIUS, STAR_REPOS_RADIUS);
+        let dispY = random(-STAR_REPOS_RADIUS, STAR_REPOS_RADIUS);
+        this.x+=dispX;
+        this.y+=dispY;
+
+        this.x = constrain(this.x, 0, width);
+        this.y = constrain(this.y, 0, height);
 
     }
 
