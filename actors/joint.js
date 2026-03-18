@@ -78,6 +78,8 @@ class Joint {
 
     Draw() {
 
+        if (!this.star1.tickOn || !this.star2.tickOn) {return;}
+
         stroke(255);
         strokeWeight(1);
 
@@ -96,7 +98,7 @@ class Joint {
         );
 
         // amplitude proportional to string length
-        this.amplitude = stringLength / 5;
+        this.amplitude = stringLength / 40;
 
         // perpendicular direction to the string
         this.strumDirection =

@@ -32,6 +32,7 @@ const COMET_WAIT_MIN = 1000;
 const COMET_MAX_WAIT = 10000;
 
 const METEOR_SHOWER_CHANCE = 0.03;       // 3 per cent chance to trigger shower on every comet spawn
+const METEOR_SHOWER_SPARKLE_CHANCE = 1;
 const METEOR_SHOWER_INTENSITY_MIN = 50;  // milliseconds between comets during shower
 const METEOR_SHOWER_INTENSITY_MAX = 200;
 const METEOR_SHOWER_DURATION = 6000;     // how long the shower lasts (ms)
@@ -146,7 +147,8 @@ function draw() {
         }
 
         // roll for a meteor shower trigger if one isn't already active
-        if (!isMeteorShower && random() < METEOR_SHOWER_CHANCE) {
+        var showerChance = (turbine.omega >= SPARKLE_OMEGA_MIN) ? METEOR_SHOWER_SPARKLE_CHANCE : METEOR_SHOWER_CHANCE;
+        if (!isMeteorShower && random() < showerChance) {
             isMeteorShower = true;
             meteorShowerEndTime = millis() + METEOR_SHOWER_DURATION;
         }

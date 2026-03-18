@@ -9,33 +9,10 @@ class ConstellationsSystem {
 
         // - generate premade connections
         const PREMADE_MIN = 3;
-        const PREMADE_MAX = 6;
+        const PREMADE_MAX = 10;
         const PREMADE_MAX_DISTANCE = 300; // max pixel distance for a premade connection
         let premadeCount = floor(random(PREMADE_MIN, PREMADE_MAX + 1));
         let attempts = 0;
-
-        while (this.connections.length < premadeCount && attempts < 500) {
-            attempts++;
-            let idx1 = floor(random(stars.length));
-            let idx2 = (idx1 + 1) % stars.length;
-
-            if (idx1 === idx2) continue;
-
-            // check distance between stars
-            const s1 = stars[idx1];
-            const s2 = stars[idx2];
-            if (dist(s1.x, s1.y, s2.x, s2.y) > PREMADE_MAX_DISTANCE) continue;
-
-            // check for existing connection to avoid duplicates
-            let exists = this.connections.some(c => 
-                (c[0] === idx1 && c[1] === idx2) || (c[0] === idx2 && c[1] === idx1)
-            );
-
-            if (!exists) {
-                let newJoint = new Joint(stars[idx1], stars[idx2]);
-                this.connections.push([idx1, idx2, newJoint]);
-            }
-        }
     }
 
     // ============================================
