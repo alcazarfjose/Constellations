@@ -71,10 +71,12 @@ let constellationsSystem;
 //
 
 let guitarNote;
+let belltree;
 let filter;
 
 function preload() {
   guitarNote = loadSound("./assets/audio/c-note-guitar.mp3");
+  belltree = loadSound("./assets/audio/belltree.wav");
 }
 
 function setup() {

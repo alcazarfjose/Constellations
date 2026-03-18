@@ -27,6 +27,11 @@ class Comet {
         this.maxTravel = random(100, 300); // VERY short distance
         this.active = true;
 
+        // play spawn sound: higher on screen (lower y) -> higher pitch
+        let pitch = map(this.startY, height, 0, 0.5, 1.5);
+        belltree.rate(pitch);
+        belltree.play();
+
         // check for intersections with existing constellation joints
         const cos45 = 0.7071;
         const endX = this.startX + this.maxTravel * cos45;
