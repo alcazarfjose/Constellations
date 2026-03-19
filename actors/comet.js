@@ -30,6 +30,7 @@ class Comet {
         // play spawn sound: higher on screen (lower y) -> higher pitch
         let pitch = map(this.startY, height, 0, 0.5, 1.5);
         belltree.rate(pitch);
+        belltree.setVolume(0.1);
         belltree.play();
 
         // check for intersections with existing constellation joints

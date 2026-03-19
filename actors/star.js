@@ -70,8 +70,6 @@ class Star {
 
             neighbors.sort((a, b) => a.dist - b.dist);
 
-            console.log(neighbors);
-
             if (constellationsSystem.connections.length >= 10) { 
                 return;
             }
@@ -101,6 +99,7 @@ class Star {
 
         this.x = constrain(this.x, 0, width);
         this.y = constrain(this.y, 0, height);
+
     }
 
     // ============================================

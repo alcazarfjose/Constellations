@@ -144,13 +144,17 @@ class Joint {
         this.strumY = this.star1.y + ABy * t;
 
         // map string length to pitch
-        let rate = map(stringLength, 0, 600, 3, 0.05);
-        rate = constrain(rate, 0.5, 2);
+        // normalize string length
+        let norm = constrain(stringLength / 600, 0, 1);
+
+        // nonlinear shaping (tune this!)
+        norm = pow(norm, 1.5);
+
+        // map to playback rate (wide expressive range)
+        let rate = lerp(3.5, 0.3, norm);
 
         // apply pitch
         guitarNote.rate(rate);
-
-        // play sound
         guitarNote.play();
 
     }

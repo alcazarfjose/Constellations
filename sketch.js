@@ -60,6 +60,7 @@ let turbine;
 
 let sparkleSystem;
 let constellationsSystem;
+let ambientAudioSystem;
 
 // ============================================
 // SETUP
@@ -114,6 +115,8 @@ function setup() {
     filter.freq(6000);
     guitarNote.disconnect();
     guitarNote.connect(filter);
+
+    ambientAudioSystem = new AmbientAudioSystem(stars, turbine);
 
 }
 
@@ -177,6 +180,8 @@ function draw() {
     sparkleSystem.Update();
 
     debugUI.Draw();
+
+    ambientAudioSystem.Update();
 
 }
 
